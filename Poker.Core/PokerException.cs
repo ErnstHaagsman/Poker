@@ -16,4 +16,16 @@ namespace Poker.Core
         {
         }
     }
+
+    public class PokerStageException : PokerException
+    {
+        public PokerStageException()
+        {
+        }
+
+        public PokerStageException(string message) :
+            base(message)
+        {
+        }
+    }
 }

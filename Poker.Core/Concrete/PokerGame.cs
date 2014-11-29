@@ -127,7 +127,7 @@ namespace Poker.Core.Concrete
         {
             // Check if we can start a new game
             if (this.stage != PokerGameStage.Finished && this.stage != PokerGameStage.Inactive)
-                throw new PokerException("Game needs to be either in 'Inactive' or 'Finished' stage to start new game");
+                throw new PokerStageException("Game needs to be either in 'Inactive' or 'Finished' stage to start new game");
 
             if (players.Count(x => x.Balance > 0) < 2)
                 throw new PokerException("At least two players should have positive balance to start a game");

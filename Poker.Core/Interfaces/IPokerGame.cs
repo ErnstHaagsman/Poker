@@ -99,7 +99,7 @@ namespace Poker.Core.Interfaces
         /// Starts a new game, only possible when the current
         /// stage is 'Inactive' or 'Finished'        
         /// </summary>
-        /// <exception cref="PokerException">If game is already active</exception>
+        /// <exception cref="PokerStageException">If game is already active</exception>
         /// <exception cref="PokerException">If less than 2 players have a positive balance</exception>
         void NewGame();
 
