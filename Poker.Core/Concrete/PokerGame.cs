@@ -115,14 +115,25 @@ namespace Poker.Core.Concrete
             throw new NotImplementedException();
         }
 
+        void betsAllowed()
+        {
+            if (stage != PokerGameStage.Blinds &&
+                stage != PokerGameStage.Flop &&
+                stage != PokerGameStage.Turn &&
+                stage != PokerGameStage.River)
+                throw new PokerStageException("Bets are only allowed in blinds, flop, turn, and river stages");
+        }
+
         public void Fold()
         {
+            betsAllowed();
             currentPlayer.Fold();
             nextPlayer();
         }
 
         public void PlaceBet(int amount)
         {
+            betsAllowed();
             betManager.PlaceBet(currentPlayer, amount);
             nextPlayer();
         }
@@ -144,6 +155,9 @@ namespace Poker.Core.Concrete
                 else
                     player.Participation = PlayerParticipation.Inactive;
             }
+
+            // Advance to blinds stage
+            this.stage = PokerGameStage.Blinds;
 
             // Arrange blinds
             smallBlindPlayer = players.NextActiveOrFirst(smallBlindPlayer);
@@ -217,11 +231,17 @@ namespace Poker.Core.Concrete
 
         public bool PlayersWin(IList<IPlayer> winners)
         {
+            if (stage != PokerGameStage.Showdown)
+                throw new PokerStageException("Winners can only be chosen in showdown stage");
+
             return betManager.CalculateWinners(winners);
         }
 
         public bool PlayerWins(IPlayer winner)
         {
+            if (stage != PokerGameStage.Showdown)
+                throw new PokerStageException("Winners can only be chosen in showdown stage");
+
             return PlayersWin(new List<IPlayer>(){ winner });
         }
     }
