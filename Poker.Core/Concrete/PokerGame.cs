@@ -9,6 +9,7 @@ namespace Poker.Core.Concrete
 {
     class PokerGame : IPokerGame
     {
+
         public int BigBlind
         {
             get
@@ -100,6 +101,12 @@ namespace Poker.Core.Concrete
         public bool PlayerWins(IPlayer winner)
         {
             throw new NotImplementedException();
+        }
+
+
+        public IBetManager BetManager
+        {
+            get { throw new NotImplementedException(); }
         }
     }
 }

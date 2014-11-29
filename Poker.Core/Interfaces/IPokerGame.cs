@@ -51,6 +51,11 @@ namespace Poker.Core.Interfaces
         /// </summary>
         PokerGameStage Stage { get; }
 
+        /// <summary>
+        /// IBetManager instance used
+        /// </summary>
+        IBetManager BetManager { get; }
+
         // Events
 
         /// <summary>

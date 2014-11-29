@@ -40,6 +40,7 @@
     <Compile Include="Concrete\PokerGame.cs" />
     <Compile Include="Enums.cs" />
     <Compile Include="EventArgs.cs" />
+    <Compile Include="Interfaces\IBetManager.cs" />
     <Compile Include="Interfaces\IPlayer.cs" />
     <Compile Include="Interfaces\IPokerGame.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
