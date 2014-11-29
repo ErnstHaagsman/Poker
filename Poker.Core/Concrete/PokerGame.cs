@@ -186,7 +186,13 @@ namespace Poker.Core.Concrete
 
         internal void determinePlayerQueue()
         {
-            throw new NotImplementedException();
+            // In a poker game, the first player to decide is the player after the big blind player
+            IPlayer toAdd;
+            do
+            {
+                toAdd = Players.NextActiveOrFirst(BigBlindPlayer);
+                activePlayerQueue.Enqueue(toAdd);
+            } while (toAdd != BigBlindPlayer);
         }
 
         internal void nextRound()
