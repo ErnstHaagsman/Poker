@@ -43,6 +43,7 @@
     <Compile Include="Interfaces\IBetManager.cs" />
     <Compile Include="Interfaces\IPlayer.cs" />
     <Compile Include="Interfaces\IPokerGame.cs" />
+    <Compile Include="PokerException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utilities.cs" />
   </ItemGroup>
