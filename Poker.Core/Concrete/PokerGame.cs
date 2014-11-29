@@ -126,8 +126,8 @@ namespace Poker.Core.Concrete
             }
 
             // Arrange blinds
-            smallBlindPlayer = players.NextAfterOrFirst(smallBlindPlayer);
-            bigBlindPlayer = players.NextAfterOrFirst(bigBlindPlayer);
+            smallBlindPlayer = players.NextActiveOrFirst(smallBlindPlayer);
+            bigBlindPlayer = players.NextActiveOrFirst(smallBlindPlayer);
 
             betManager.PlaceBet(smallBlindPlayer, SmallBlind);
             betManager.PlaceBet(bigBlindPlayer, BigBlind);

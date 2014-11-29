@@ -126,5 +126,18 @@ namespace Poker.Tests.PokerGameTests
             Assert.Equal(PokerGameStage.Flop, actual.Stage);
         }
 
+        [Fact]
+        public void NewGame_BlindPlayersCorrectlySelected()
+        {
+            // Arrange
+            players[1].Object.Balance = 0;
+
+            // Act
+            game.NewGame();
+
+            // Assert
+            Assert.Equal(players[0].Object, game.SmallBlindPlayer);
+            Assert.Equal(players[2].Object, game.BigBlindPlayer);
+        }
     }
 }
