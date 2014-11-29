@@ -112,7 +112,10 @@ namespace Poker.Core.Concrete
 
         public void RemovePlayer(IPlayer player)
         {
-            throw new NotImplementedException();
+            if (player.Participation != PlayerParticipation.Inactive)
+                throw new PokerException("Players can only be removed from the game if they're inactive");
+
+            players.Remove(player);
         }
 
         void betsAllowed()
