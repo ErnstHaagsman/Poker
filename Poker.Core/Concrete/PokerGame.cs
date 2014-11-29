@@ -197,7 +197,22 @@ namespace Poker.Core.Concrete
 
         internal void nextRound()
         {
-            throw new NotImplementedException();
+            switch (stage)
+            {
+                case PokerGameStage.Blinds:
+                    stage = PokerGameStage.Flop;
+                    break;
+                case PokerGameStage.Flop:
+                    stage = PokerGameStage.Turn;
+                    break;
+                case PokerGameStage.Turn:
+                    stage = PokerGameStage.River;
+                    break;
+                case PokerGameStage.River:
+                    stage = PokerGameStage.Showdown;
+                    break;
+            }
+            if (stage != PokerGameStage.Showdown) nextPlayer();
         }
 
         public bool PlayersWin(IList<IPlayer> winners)
