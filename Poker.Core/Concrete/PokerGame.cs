@@ -176,29 +176,25 @@ namespace Poker.Core.Concrete
         internal void nextPlayer()
         {
             // Check if any players are in the queue
-            // If there are, select the first one
-            if (activePlayerQueue.Count > 0)
+            // If there are none, we should check if the
+            // round is over
+            if (activePlayerQueue.Count == 0)
             {
-                this.currentPlayer = activePlayerQueue.Dequeue();
-                return;
+                if (betManager.BettingRoundOver())
+                {
+                    nextRound();
+                    return;
+                }
+                else
+                {
+                    // Someone raised, so we should re-check with everyone
+                    determinePlayerQueue();
+                }
             }
 
-            // If there are no more players left in the queue
-            // Check if the betting round is over
-            bool roundOver = betManager.BettingRoundOver();
+            this.currentPlayer = activePlayerQueue.Dequeue();
+            raiseNextPlayer(new PokerPlayerEventArgs(this.currentPlayer));
 
-            if (roundOver)
-            {
-                // If the round is over => next round
-                this.nextRound();
-            }
-            else
-            {
-                // If the round is not over, we should determine which
-                // players are active, and pick the first one
-                determinePlayerQueue();
-                this.currentPlayer = activePlayerQueue.Dequeue();
-            }
         }
 
         internal void determinePlayerQueue()
@@ -236,7 +232,16 @@ namespace Poker.Core.Concrete
                     stage = PokerGameStage.Showdown;
                     break;
             }
-            if (stage != PokerGameStage.Showdown) nextPlayer();
+
+            // Raise event
+            raiseNextBettingRound(new PokerGameEventArgs(stage));
+
+            // If the next stage is a betting round, start it
+            if (stage != PokerGameStage.Showdown)
+            {
+                determinePlayerQueue();
+                nextPlayer();
+            }
         }
 
         public bool PlayersWin(IList<IPlayer> winners)

@@ -77,11 +77,16 @@ namespace Poker.Tests.PokerGameTests
         [Fact]
         public void EarlyGame_InitialPlayerCorrect()
         {
+            // Arrange
+            IPlayer actual = null;
+            game.NextPlayer += (o, e) => actual = e.Player;
+
             // Act
             game.NewGame();
 
             // Assert
             Assert.Equal(players[2].Object, game.CurrentPlayer);
+            Assert.Equal(players[2].Object, actual);
         }
 
         [Fact(Skip = "To be refactored")]
@@ -113,7 +118,7 @@ namespace Poker.Tests.PokerGameTests
             betManager.Verify(x => x.PlaceBet(players[2].Object, 300), Times.Once);
         }
 
-        [Fact(Skip = "To be refactored")]
+        [Fact]
         public void EarlyGame_StageAdvancesToFlop()
         {
             // Arrange
@@ -121,11 +126,11 @@ namespace Poker.Tests.PokerGameTests
             PokerGameEventArgs actual = null;
             game.NextBettingRound += (s, e) => actual = e;
             betManager.Setup(x => x.BettingRoundOver()).Returns(true);
+            const int INSIGNIFICANT = 3;
 
             // Act
-            game.PlaceBet(BIG_BLIND); // players[2]
-            game.PlaceBet(BIG_BLIND - SMALL_BLIND); // players[0]
-            game.PlaceBet(0); // players[1]
+            foreach (var insignificant in players)
+                game.PlaceBet(INSIGNIFICANT);
 
             // Assert
             Assert.Equal(PokerGameStage.Flop, game.Stage);
