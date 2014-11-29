@@ -7,6 +7,7 @@ namespace Poker.Core
 {
     public enum PokerGameStage
     {
+        Inactive,
         Blinds,
         Flop,
         Turn,

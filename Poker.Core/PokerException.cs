@@ -7,5 +7,13 @@ namespace Poker.Core
 {
     public class PokerException : Exception
     {
+        public PokerException()
+        {
+        }
+
+        public PokerException(string message) :
+            base(message)
+        {
+        }
     }
 }

@@ -83,6 +83,7 @@ namespace Poker.Core.Concrete
         {
             this.betManager = betManager;
             this.players = new List<IPlayer>();
+            this.stage = PokerGameStage.Inactive;
         }
 
         public void AddPlayer(IPlayer player)
@@ -108,6 +109,13 @@ namespace Poker.Core.Concrete
 
         public void NewGame()
         {
+            // Check if we can start a new game
+            if (this.stage != PokerGameStage.Finished && this.stage != PokerGameStage.Inactive)
+                throw new PokerException("Game needs to be either in 'Inactive' or 'Finished' stage to start new game");
+
+            if (players.Count(x => x.Balance > 0) < 2)
+                throw new PokerException("At least two players should have positive balance to start a game");
+
             // Mark players active
             foreach (var player in players)
             {
