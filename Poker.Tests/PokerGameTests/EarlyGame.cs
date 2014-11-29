@@ -31,11 +31,14 @@ namespace Poker.Tests.PokerGameTests
         /// <returns></returns>
         IPokerGame getGame()
         {
-            return new PokerGame(new Mock<IBetManager>().Object);
+            betManager = new Mock<IBetManager>();
+            betManager.Setup(x => x.BettingRoundOver()).Returns(false);
+            return new PokerGame(betManager.Object);
         }
 
         IPokerGame game;
         List<Mock<Player>> players;
+        Mock<IBetManager> betManager;
 
         public EarlyGame()
         {
@@ -138,6 +141,27 @@ namespace Poker.Tests.PokerGameTests
             // Assert
             Assert.Equal(players[0].Object, game.SmallBlindPlayer);
             Assert.Equal(players[2].Object, game.BigBlindPlayer);
+        }
+
+        [Fact]
+        public void NewGame_ThrowsWithSinglePlayer()
+        {
+            // Arrange
+            game.RemovePlayer(players[1].Object);
+            game.RemovePlayer(players[2].Object);
+
+            // Act & Assert
+            Assert.Throws<PokerException>(delegate { game.NewGame(); });
+        }
+
+        [Fact]
+        public void NewGame_ThrowsWhenGameActive()
+        {
+            // Arrange
+            game.NewGame();
+
+            // Assert
+            Assert.Throws<PokerStageException>(delegate { game.NewGame(); });
         }
     }
 }
