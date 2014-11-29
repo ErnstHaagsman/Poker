@@ -107,7 +107,7 @@ namespace Poker.Core.Interfaces
         /// </summary>
         /// <param name="winners"></param>
         /// <returns>False if one of the winners was all-in and a side pot needs to be resolved</returns>
-        bool PlayersWin(List<IPlayer> winners);
+        bool PlayersWin(IList<IPlayer> winners);
 
         /// <summary>
         /// Determines winnings and losses

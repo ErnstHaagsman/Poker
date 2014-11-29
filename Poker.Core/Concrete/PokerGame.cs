@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using Poker.Core;
 using Poker.Core.Interfaces;
-using Poker.Core.Utilities;
 
 namespace Poker.Core.Concrete
 {
@@ -134,7 +133,7 @@ namespace Poker.Core.Concrete
             throw new NotImplementedException();
         }
 
-        public bool PlayersWin(List<IPlayer> winners)
+        public bool PlayersWin(IList<IPlayer> winners)
         {
             return betManager.CalculateWinners(winners);
         }

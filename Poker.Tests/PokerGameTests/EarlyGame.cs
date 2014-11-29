@@ -31,7 +31,7 @@ namespace Poker.Tests.PokerGameTests
         /// <returns></returns>
         IPokerGame getGame()
         {
-            return new PokerGame();
+            return new PokerGame(new Mock<IBetManager>().Object);
         }
 
         IPokerGame game;

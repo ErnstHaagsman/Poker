@@ -6,7 +6,7 @@ using Poker.Core;
 
 namespace Poker.Core.Interfaces
 {
-    interface IPlayer
+    public interface IPlayer
     {
         // Properties
 
