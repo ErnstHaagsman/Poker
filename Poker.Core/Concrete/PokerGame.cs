@@ -10,6 +10,7 @@ namespace Poker.Core.Concrete
     class PokerGame : IPokerGame
     {
         private IBetManager betManager;
+        private Queue<IPlayer> activePlayerQueue;
 
         public IBetManager BetManager
         {
@@ -100,6 +101,7 @@ namespace Poker.Core.Concrete
             this.betManager = betManager;
             this.players = new List<IPlayer>();
             this.stage = PokerGameStage.Inactive;
+            this.activePlayerQueue = new Queue<IPlayer>();
         }
 
         public void AddPlayer(IPlayer player)
@@ -116,11 +118,13 @@ namespace Poker.Core.Concrete
         public void Fold()
         {
             currentPlayer.Fold();
+            nextPlayer();
         }
 
         public void PlaceBet(int amount)
         {
             betManager.PlaceBet(currentPlayer, amount);
+            nextPlayer();
         }
 
         public void NewGame()
@@ -153,6 +157,39 @@ namespace Poker.Core.Concrete
         }
 
         internal void nextPlayer()
+        {
+            // Check if any players are in the queue
+            // If there are, select the first one
+            if (activePlayerQueue.Count > 0)
+            {
+                this.currentPlayer = activePlayerQueue.Dequeue();
+                return;
+            }
+
+            // If there are no more players left in the queue
+            // Check if the betting round is over
+            bool roundOver = betManager.BettingRoundOver();
+
+            if (roundOver)
+            {
+                // If the round is over => next round
+                this.nextRound();
+            }
+            else
+            {
+                // If the round is not over, we should determine which
+                // players are active, and pick the first one
+                determinePlayerQueue();
+                this.currentPlayer = activePlayerQueue.Dequeue();
+            }
+        }
+
+        internal void determinePlayerQueue()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void nextRound()
         {
             throw new NotImplementedException();
         }
