@@ -33,6 +33,7 @@ namespace Poker.Tests.PokerGameTests
         {
             betManager = new Mock<IBetManager>();
             betManager.Setup(x => x.BettingRoundOver()).Returns(false);
+            betManager.SetupAllProperties();
             return new PokerGame(betManager.Object);
         }
 
@@ -53,26 +54,27 @@ namespace Poker.Tests.PokerGameTests
             {
                 var player = new Mock<Player>();
                 player.CallBase = true;
+                player.Object.Name = String.Format("Player {0}", i);
                 player.Object.Balance = PLAYER_BALANCE;
                 players.Add(player);
                 game.AddPlayer(player.Object);
             }
         }
 
-        [Fact(Skip = "To be refactored")]
+        [Fact]
         public void EarlyGame_BlindsCorrectlyApplied()
         {
             // Act
             game.NewGame();
             
             // Assert
-            Assert.Equal(players[0].Object, game.BigBlindPlayer);
-            Assert.Equal(players[1].Object, game.SmallBlindPlayer);
-            Assert.Equal(BIG_BLIND, players[0].Object.Bet);
-            Assert.Equal(SMALL_BLIND, players[1].Object.Bet);
+            Assert.Equal(players[0].Object, game.SmallBlindPlayer);
+            Assert.Equal(players[1].Object, game.BigBlindPlayer);
+            betManager.Verify(x => x.PlaceBet(players[0].Object, SMALL_BLIND), Times.Once);
+            betManager.Verify(x => x.PlaceBet(players[1].Object, BIG_BLIND), Times.Once);
         }
 
-        [Fact(Skip = "To be refactored")]
+        [Fact]
         public void EarlyGame_InitialPlayerCorrect()
         {
             // Act
@@ -98,7 +100,7 @@ namespace Poker.Tests.PokerGameTests
             Assert.Equal(BIG_BLIND + 150, game.CurrentBet);
         }
 
-        [Fact(Skip = "To be refactored")]
+        [Fact]
         public void EarlyGame_PlaceBetRedirected()
         {
             // Arrange
@@ -108,7 +110,7 @@ namespace Poker.Tests.PokerGameTests
             game.PlaceBet(300);
 
             // Assert
-            players[2].Verify(x => x.PlaceBet(300), Times.Once);
+            betManager.Verify(x => x.PlaceBet(players[2].Object, 300), Times.Once);
         }
 
         [Fact(Skip = "To be refactored")]
@@ -118,6 +120,7 @@ namespace Poker.Tests.PokerGameTests
             game.NewGame();
             PokerGameEventArgs actual = null;
             game.NextBettingRound += (s, e) => actual = e;
+            betManager.Setup(x => x.BettingRoundOver()).Returns(true);
 
             // Act
             game.PlaceBet(BIG_BLIND); // players[2]
