@@ -76,8 +76,24 @@ namespace Poker.Core.Concrete
         }
 
         public event EventHandler<PokerGameEventArgs> NextBettingRound;
+        protected void raiseNextBettingRound(PokerGameEventArgs e)
+        {
+            var handler = NextBettingRound;
+            if (handler != null)
+            {
+                handler(this, e);
+            }
+        }
 
         public event EventHandler<PokerPlayerEventArgs> NextPlayer;
+        protected void raiseNextPlayer(PokerPlayerEventArgs e)
+        {
+            var handler = NextPlayer;
+            if (handler != null)
+            {
+                handler(this, e);
+            }
+        }
 
         public PokerGame(IBetManager betManager)
         {
