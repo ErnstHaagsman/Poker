@@ -4,73 +4,92 @@ using System.Linq;
 using System.Text;
 using Poker.Core;
 using Poker.Core.Interfaces;
+using Poker.Core.Utilities;
 
 namespace Poker.Core.Concrete
 {
     class PokerGame : IPokerGame
     {
+        private IBetManager betManager;
+
+        public IBetManager BetManager
+        {
+            get { return betManager; }
+        }
 
         public int BigBlind
         {
             get
             {
-                throw new NotImplementedException();
+                return betManager.BigBlind;
             }
             set
             {
-                throw new NotImplementedException();
+                betManager.BigBlind = value;
             }
         }
 
+        IPlayer bigBlindPlayer;
         public IPlayer BigBlindPlayer
         {
-            get { throw new NotImplementedException(); }
+            get { return bigBlindPlayer; }
         }
 
         public int SmallBlind
         {
             get
             {
-                throw new NotImplementedException();
+                return betManager.SmallBlind;
             }
             set
             {
-                throw new NotImplementedException();
+                betManager.SmallBlind = value;
             }
         }
 
+        IPlayer smallBlindPlayer;
         public IPlayer SmallBlindPlayer
         {
-            get { throw new NotImplementedException(); }
+            get { return smallBlindPlayer; }
         }
 
         public int CurrentBet
         {
-            get { throw new NotImplementedException(); }
+            get { return betManager.CurrentBet; }
         }
 
+        private IPlayer currentPlayer;
         public IPlayer CurrentPlayer
         {
-            get { throw new NotImplementedException(); }
+            get { return currentPlayer; }
         }
 
-        public List<IPlayer> Players
+        private List<IPlayer> players;
+        public IList<IPlayer> Players
         {
-            get { throw new NotImplementedException(); }
+            get { return players; }
         }
 
+        PokerGameStage stage;
         public PokerGameStage Stage
         {
-            get { throw new NotImplementedException(); }
+            get { return stage; }
         }
 
         public event EventHandler<PokerGameEventArgs> NextBettingRound;
 
         public event EventHandler<PokerPlayerEventArgs> NextPlayer;
 
+        public PokerGame(IBetManager betManager)
+        {
+            this.betManager = betManager;
+            this.players = new List<IPlayer>();
+        }
+
         public void AddPlayer(IPlayer player)
         {
-            throw new NotImplementedException();
+            player.Participation = PlayerParticipation.Inactive;
+            players.Add(player);
         }
 
         public void RemovePlayer(IPlayer player)
@@ -80,33 +99,49 @@ namespace Poker.Core.Concrete
 
         public void Fold()
         {
-            throw new NotImplementedException();
+            currentPlayer.Fold();
         }
 
         public void PlaceBet(int amount)
         {
-            throw new NotImplementedException();
+            betManager.PlaceBet(currentPlayer, amount);
         }
 
         public void NewGame()
+        {
+            // Mark players active
+            foreach (var player in players)
+            {
+                if (player.Balance > 0)
+                    player.Participation = PlayerParticipation.Active;
+                else
+                    player.Participation = PlayerParticipation.Inactive;
+            }
+
+            // Arrange blinds
+            smallBlindPlayer = players.NextAfterOrFirst(smallBlindPlayer);
+            bigBlindPlayer = players.NextAfterOrFirst(bigBlindPlayer);
+
+            betManager.PlaceBet(smallBlindPlayer, SmallBlind);
+            betManager.PlaceBet(bigBlindPlayer, BigBlind);
+
+            // Call nextPlayer
+            nextPlayer();
+        }
+
+        internal void nextPlayer()
         {
             throw new NotImplementedException();
         }
 
         public bool PlayersWin(List<IPlayer> winners)
         {
-            throw new NotImplementedException();
+            return betManager.CalculateWinners(winners);
         }
 
         public bool PlayerWins(IPlayer winner)
         {
-            throw new NotImplementedException();
-        }
-
-
-        public IBetManager BetManager
-        {
-            get { throw new NotImplementedException(); }
+            return PlayersWin(new List<IPlayer>(){ winner });
         }
     }
 }

@@ -44,7 +44,7 @@ namespace Poker.Core.Interfaces
         /// <summary>
         /// The players in the game
         /// </summary>
-        List<IPlayer> Players { get; }
+        IList<IPlayer> Players { get; }
 
         /// <summary>
         /// The current stage of the game
